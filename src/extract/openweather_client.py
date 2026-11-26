@@ -18,6 +18,8 @@ class OpenWeatherClient:
 
     WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather"
     AIR_POLLUTION_URL = "https://api.openweathermap.org/data/2.5/air_pollution"
+    WEATHER_FORECAST_URL = "https://api.openweathermap.org/data/2.5/forecast"
+    AIR_POLLUTION_FORECAST_URL = "https://api.openweathermap.org/data/2.5/air_pollution/forecast"
 
     def __init__(self, api_key: Optional[str] = None, timeout: int = 10, max_retries: int = 3):
         self.settings = AppSettings()
@@ -94,6 +96,29 @@ class OpenWeatherClient:
 
         return payload, status_code, fetch_time
 
+    def get_weather_forecast(self, lat: float, lon: float) -> Dict[str, Any]:
+        """Fetches 5-day / 3-hour weather forecast."""
+        params = {"lat": lat, "lon": lon, "units": "metric", "appid": self.api_key}
+        try:
+            response = self.session.get(self.WEATHER_FORECAST_URL, params=params, timeout=self.timeout)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as exc:
+            logger.error(f"Failed to fetch weather forecast: {exc}")
+            return {}
+
+    def get_air_pollution_forecast(self, lat: float, lon: float) -> Dict[str, Any]:
+        """Fetches hourly air pollution forecast for the next 4-5 days."""
+        params = {"lat": lat, "lon": lon, "appid": self.api_key}
+        try:
+            response = self.session.get(self.AIR_POLLUTION_FORECAST_URL, params=params, timeout=self.timeout)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as exc:
+            logger.error(f"Failed to fetch air pollution forecast: {exc}")
+            return {}
+
+
     def get_air_pollution(self, location_id: str, lat: float, lon: float) -> Tuple[Dict[str, Any], int, datetime]:
         """
         Fetches air pollution data for a location and saves raw payload.
@@ -128,3 +153,26 @@ class OpenWeatherClient:
         self._save_raw_json("air_quality", location_id, fetch_time, meta_payload)
 
         return payload, status_code, fetch_time
+
+    def get_weather_forecast(self, lat: float, lon: float) -> Dict[str, Any]:
+        """Fetches 5-day / 3-hour weather forecast."""
+        params = {"lat": lat, "lon": lon, "units": "metric", "appid": self.api_key}
+        try:
+            response = self.session.get(self.WEATHER_FORECAST_URL, params=params, timeout=self.timeout)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as exc:
+            logger.error(f"Failed to fetch weather forecast: {exc}")
+            return {}
+
+    def get_air_pollution_forecast(self, lat: float, lon: float) -> Dict[str, Any]:
+        """Fetches hourly air pollution forecast for the next 4-5 days."""
+        params = {"lat": lat, "lon": lon, "appid": self.api_key}
+        try:
+            response = self.session.get(self.AIR_POLLUTION_FORECAST_URL, params=params, timeout=self.timeout)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as exc:
+            logger.error(f"Failed to fetch air pollution forecast: {exc}")
+            return {}
+

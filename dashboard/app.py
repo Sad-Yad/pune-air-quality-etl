@@ -17,6 +17,8 @@ import streamlit as st
 from sqlalchemy import text
 
 from src.load.database import get_db_session, init_db
+from src.extract.openweather_client import OpenWeatherClient
+from src.transform.normalize import unix_to_utc_and_ist, AQI_CATEGORY_MAP
 from src.analytics.trends import (
     get_latest_readings_all_locations,
     calculate_city_metrics,
@@ -234,8 +236,10 @@ metric_card(col6, "Wind Speed", f"{loc_row['wind_speed_kph']:.1f} km/h" if pd.no
 st.markdown("<br/>", unsafe_allow_html=True)
 
 # Tabs for Structured Exploration
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Trends & Outdoor Window",
+    "Air Quality Forecast",
+    "5-Day Weather Forecast",
     "City Comparison",
     "Weather-Pollution Context",
     "Alerts & Health Logs"
@@ -307,6 +311,137 @@ with tab1:
         st.info("7-day trend requires accumulating continuous data.")
 
 with tab2:
+    st.subheader(f"Air Pollution Forecast — Next 4 Days ({selected_loc_name})")
+    st.caption("Hourly forecasted concentrations of PM2.5, PM10, NO2, and AQI from OpenWeather models.")
+
+    @st.cache_data(ttl=900)
+    def fetch_aq_forecast(lat: float, lon: float):
+        client = OpenWeatherClient()
+        return client.get_air_pollution_forecast(lat, lon)
+
+    aq_forecast_raw = fetch_aq_forecast(loc_row["latitude"], loc_row["longitude"])
+    items = aq_forecast_raw.get("list", [])
+    if items:
+        f_records = []
+        for it in items:
+            _, dt_ist = unix_to_utc_and_ist(it["dt"])
+            comp = it.get("components", {})
+            aqi_val = it.get("main", {}).get("aqi")
+            f_records.append({
+                "Time (IST)": dt_ist,
+                "PM2.5 (µg/m³)": comp.get("pm2_5"),
+                "PM10 (µg/m³)": comp.get("pm10"),
+                "NO2 (µg/m³)": comp.get("no2"),
+                "O3 (µg/m³)": comp.get("o3"),
+                "AQI": aqi_val,
+                "Category": AQI_CATEGORY_MAP.get(aqi_val, "Unknown")
+            })
+        df_aq_f = pd.DataFrame(f_records)
+
+        fig_aq_f = go.Figure()
+        fig_aq_f.add_trace(go.Scatter(
+            x=df_aq_f["Time (IST)"],
+            y=df_aq_f["PM2.5 (µg/m³)"],
+            name="PM2.5 (µg/m³)",
+            line=dict(color="#0969da", width=2.5)
+        ))
+        fig_aq_f.add_trace(go.Scatter(
+            x=df_aq_f["Time (IST)"],
+            y=df_aq_f["PM10 (µg/m³)"],
+            name="PM10 (µg/m³)",
+            line=dict(color="#8250df", width=1.5, dash="dot")
+        ))
+        fig_aq_f.add_hline(
+            y=60,
+            line_dash="dash",
+            line_color="#d1242f",
+            annotation_text="Poor Threshold (60 µg/m³)"
+        )
+        fig_aq_f.update_layout(
+            height=320,
+            margin=dict(l=20, r=20, t=30, b=20),
+            xaxis_title="Forecast Timeline (IST)",
+            yaxis_title="Pollutant Concentration (µg/m³)",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(128,128,128,0.06)",
+            xaxis=dict(showgrid=True, gridcolor="rgba(128,128,128,0.2)"),
+            yaxis=dict(showgrid=True, gridcolor="rgba(128,128,128,0.2)"),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        )
+        st.plotly_chart(fig_aq_f, use_container_width=True)
+
+        st.dataframe(
+            df_aq_f.head(24),
+            use_container_width=True,
+            hide_index=True
+        )
+    else:
+        st.info("Pollution forecast is currently loading or unavailable.")
+
+with tab3:
+    st.subheader(f"5-Day Weather Forecast ({selected_loc_name})")
+    st.caption("3-hour meteorological outlook: Temperature, Humidity, Rain probability, and Wind speed.")
+
+    @st.cache_data(ttl=900)
+    def fetch_weather_forecast(lat: float, lon: float):
+        client = OpenWeatherClient()
+        return client.get_weather_forecast(lat, lon)
+
+    w_forecast_raw = fetch_weather_forecast(loc_row["latitude"], loc_row["longitude"])
+    w_items = w_forecast_raw.get("list", [])
+    if w_items:
+        w_records = []
+        for wi in w_items:
+            _, dt_ist = unix_to_utc_and_ist(wi["dt"])
+            m = wi.get("main", {})
+            w_wind = wi.get("wind", {})
+            weather_desc = wi.get("weather", [{}])[0].get("description", "").title()
+            w_records.append({
+                "Time (IST)": dt_ist,
+                "Temp (°C)": round(m.get("temp", 0), 1),
+                "Feels Like (°C)": round(m.get("feels_like", 0), 1),
+                "Humidity (%)": m.get("humidity"),
+                "Wind (km/h)": round((w_wind.get("speed", 0) or 0) * 3.6, 1),
+                "Rain (mm/3h)": wi.get("rain", {}).get("3h", 0.0),
+                "Condition": weather_desc
+            })
+        df_w_f = pd.DataFrame(w_records)
+
+        fig_wf = go.Figure()
+        fig_wf.add_trace(go.Scatter(
+            x=df_w_f["Time (IST)"],
+            y=df_w_f["Temp (°C)"],
+            name="Temp (°C)",
+            line=dict(color="#cf222e", width=2.5)
+        ))
+        fig_wf.add_trace(go.Scatter(
+            x=df_w_f["Time (IST)"],
+            y=df_w_f["Humidity (%)"],
+            name="Humidity (%)",
+            line=dict(color="#0969da", width=1.5, dash="dash")
+        ))
+        fig_wf.update_layout(
+            height=320,
+            margin=dict(l=20, r=20, t=30, b=20),
+            xaxis_title="Forecast Date & Time (IST)",
+            yaxis_title="Value",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(128,128,128,0.06)",
+            xaxis=dict(showgrid=True, gridcolor="rgba(128,128,128,0.2)"),
+            yaxis=dict(showgrid=True, gridcolor="rgba(128,128,128,0.2)"),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        )
+        st.plotly_chart(fig_wf, use_container_width=True)
+
+        st.dataframe(
+            df_w_f.head(16),
+            use_container_width=True,
+            hide_index=True
+        )
+    else:
+        st.info("Weather forecast data is currently loading.")
+
+with tab4:
     st.subheader("Pune Stations Comparison")
     df_comp = df_latest.dropna(subset=["pm2_5"]).sort_values("pm2_5", ascending=True)
     if not df_comp.empty:
