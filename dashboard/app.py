@@ -3,7 +3,7 @@ Plain, functional, accessible layout avoiding neon/glass aesthetics.
 """
 import sys
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # Ensure project root is in sys.path when running from Streamlit Cloud
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -91,7 +91,7 @@ def load_all_latest():
 
 @st.cache_data(ttl=60)
 def load_history(location_id: str, days: int = 7):
-    cutoff = datetime.utcnow() - timedelta(days=days)
+    cutoff = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)
     query = text("""
         SELECT 
             aq.observed_at_ist,
