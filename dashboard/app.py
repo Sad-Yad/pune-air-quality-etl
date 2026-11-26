@@ -258,15 +258,26 @@ with tab1:
                 x=pd.to_datetime(df_hist["observed_at_ist"]),
                 y=df_hist["pm2_5"],
                 name="PM2.5 (µg/m³)",
-                line=dict(color="#24292f", width=2)
+                mode="lines+markers",
+                line=dict(color="#0969da", width=2.5),
+                marker=dict(size=5, color="#0969da")
             ))
-            fig.add_hline(y=60, line_dash="dash", line_color="#cf222e", annotation_text="Poor Threshold (60 µg/m³)")
+            fig.add_hline(
+                y=60,
+                line_dash="dash",
+                line_color="#d1242f",
+                annotation_text="Poor Threshold (60 µg/m³)",
+                annotation_font_color="#d1242f"
+            )
             fig.update_layout(
                 margin=dict(l=20, r=20, t=30, b=20),
                 height=300,
                 xaxis_title="Time (IST)",
                 yaxis_title="PM2.5 (µg/m³)",
-                template="simple_white"
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(128,128,128,0.06)",
+                xaxis=dict(showgrid=True, gridcolor="rgba(128,128,128,0.2)"),
+                yaxis=dict(showgrid=True, gridcolor="rgba(128,128,128,0.2)"),
             )
             st.plotly_chart(fig, use_container_width=True)
         else:
@@ -279,10 +290,18 @@ with tab1:
             df_week,
             x="observed_at_ist",
             y="pm2_5",
-            labels={"observed_at_ist": "Date & Time (IST)", "pm2_5": "PM2.5 (µg/m³)"},
-            template="simple_white"
+            markers=True,
+            labels={"observed_at_ist": "Date & Time (IST)", "pm2_5": "PM2.5 (µg/m³)"}
         )
-        fig_week.update_layout(height=260, margin=dict(l=20, r=20, t=20, b=20))
+        fig_week.update_traces(line_color="#1f883d", marker=dict(size=4))
+        fig_week.update_layout(
+            height=260,
+            margin=dict(l=20, r=20, t=20, b=20),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(128,128,128,0.06)",
+            xaxis=dict(showgrid=True, gridcolor="rgba(128,128,128,0.2)"),
+            yaxis=dict(showgrid=True, gridcolor="rgba(128,128,128,0.2)"),
+        )
         st.plotly_chart(fig_week, use_container_width=True)
     else:
         st.info("7-day trend requires accumulating continuous data.")
@@ -298,10 +317,16 @@ with tab2:
             orientation="h",
             labels={"pm2_5": "Current PM2.5 (µg/m³)", "location_name": "Location"},
             color="openweather_aqi",
-            color_continuous_scale=["#2da44e", "#d4a72c", "#cf222e"],
-            template="simple_white"
+            color_continuous_scale=["#2da44e", "#d4a72c", "#cf222e"]
         )
-        fig_comp.update_layout(height=320, margin=dict(l=20, r=20, t=20, b=20))
+        fig_comp.update_layout(
+            height=320,
+            margin=dict(l=20, r=20, t=20, b=20),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(128,128,128,0.06)",
+            xaxis=dict(showgrid=True, gridcolor="rgba(128,128,128,0.2)"),
+            yaxis=dict(showgrid=False),
+        )
         st.plotly_chart(fig_comp, use_container_width=True)
     
     st.dataframe(
