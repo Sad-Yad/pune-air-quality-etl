@@ -1,0 +1,31 @@
+{
+  "location_id": "nigdi",
+  "source": "openweather",
+  "endpoint": "air_pollution",
+  "requested_at": "2026-11-26T03:35:00.887506+00:00",
+  "response_status": 200,
+  "response_payload": {
+    "coord": {
+      "lon": 73.7997,
+      "lat": 18.6298
+    },
+    "list": [
+      {
+        "main": {
+          "aqi": 5
+        },
+        "components": {
+          "co": 653.67,
+          "no": 0.63,
+          "no2": 6.14,
+          "o3": 81.04,
+          "so2": 14.75,
+          "pm2_5": 103.57,
+          "pm10": 118.23,
+          "nh3": 1.93
+        },
+        "dt": 1795664110
+      }
+    ]
+  }
+}

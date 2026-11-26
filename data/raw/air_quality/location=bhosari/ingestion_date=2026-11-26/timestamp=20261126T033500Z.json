@@ -1,0 +1,31 @@
+{
+  "location_id": "bhosari",
+  "source": "openweather",
+  "endpoint": "air_pollution",
+  "requested_at": "2026-11-26T03:35:00.636176+00:00",
+  "response_status": 200,
+  "response_payload": {
+    "coord": {
+      "lon": 73.8485,
+      "lat": 18.6296
+    },
+    "list": [
+      {
+        "main": {
+          "aqi": 5
+        },
+        "components": {
+          "co": 628.57,
+          "no": 0.67,
+          "no2": 5.53,
+          "o3": 71.39,
+          "so2": 6.69,
+          "pm2_5": 94.69,
+          "pm10": 105.65,
+          "nh3": 2.74
+        },
+        "dt": 1795664110
+      }
+    ]
+  }
+}

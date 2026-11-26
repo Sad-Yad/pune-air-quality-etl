@@ -1,0 +1,53 @@
+{
+  "location_id": "lohegaon",
+  "source": "openweather",
+  "endpoint": "weather",
+  "requested_at": "2026-11-26T03:40:45.872038+00:00",
+  "response_status": 200,
+  "response_payload": {
+    "coord": {
+      "lon": 73.9177,
+      "lat": 18.5793
+    },
+    "weather": [
+      {
+        "id": 800,
+        "main": "Clear",
+        "description": "clear sky",
+        "icon": "01d"
+      }
+    ],
+    "base": "stations",
+    "main": {
+      "temp": 27.08,
+      "feels_like": 26.06,
+      "temp_min": 27.08,
+      "temp_max": 27.08,
+      "pressure": 1018,
+      "humidity": 17,
+      "sea_level": 1018,
+      "grnd_level": 947
+    },
+    "visibility": 10000,
+    "wind": {
+      "speed": 1.9,
+      "deg": 69,
+      "gust": 2.48
+    },
+    "clouds": {
+      "all": 8
+    },
+    "dt": 1795664110,
+    "sys": {
+      "type": 2,
+      "id": 2107474,
+      "country": "IN",
+      "sunrise": 1795655844,
+      "sunset": 1795695960
+    },
+    "timezone": 19800,
+    "id": 7357900,
+    "name": "Viman Nagar",
+    "cod": 200
+  }
+}

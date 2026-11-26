@@ -1,0 +1,52 @@
+{
+  "location_id": "hadapsar",
+  "source": "openweather",
+  "endpoint": "weather",
+  "requested_at": "2026-11-26T03:35:00.265819+00:00",
+  "response_status": 200,
+  "response_payload": {
+    "coord": {
+      "lon": 73.926,
+      "lat": 18.5018
+    },
+    "weather": [
+      {
+        "id": 800,
+        "main": "Clear",
+        "description": "clear sky",
+        "icon": "01d"
+      }
+    ],
+    "base": "stations",
+    "main": {
+      "temp": 27.18,
+      "feels_like": 26.12,
+      "temp_min": 27.18,
+      "temp_max": 27.18,
+      "pressure": 1018,
+      "humidity": 17,
+      "sea_level": 1018,
+      "grnd_level": 944
+    },
+    "visibility": 10000,
+    "wind": {
+      "speed": 1.34,
+      "deg": 18
+    },
+    "clouds": {
+      "all": 8
+    },
+    "dt": 1795664109,
+    "sys": {
+      "type": 2,
+      "id": 2107474,
+      "country": "IN",
+      "sunrise": 1795655834,
+      "sunset": 1795695966
+    },
+    "timezone": 19800,
+    "id": 1264089,
+    "name": "Mali and Munjeri",
+    "cod": 200
+  }
+}

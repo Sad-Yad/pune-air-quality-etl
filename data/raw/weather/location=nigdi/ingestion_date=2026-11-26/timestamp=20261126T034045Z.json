@@ -1,0 +1,53 @@
+{
+  "location_id": "nigdi",
+  "source": "openweather",
+  "endpoint": "weather",
+  "requested_at": "2026-11-26T03:40:45.820904+00:00",
+  "response_status": 200,
+  "response_payload": {
+    "coord": {
+      "lon": 73.7997,
+      "lat": 18.6298
+    },
+    "weather": [
+      {
+        "id": 800,
+        "main": "Clear",
+        "description": "clear sky",
+        "icon": "01d"
+      }
+    ],
+    "base": "stations",
+    "main": {
+      "temp": 27.22,
+      "feels_like": 26.15,
+      "temp_min": 27.22,
+      "temp_max": 27.22,
+      "pressure": 1018,
+      "humidity": 17,
+      "sea_level": 1018,
+      "grnd_level": 946
+    },
+    "visibility": 10000,
+    "wind": {
+      "speed": 2.22,
+      "deg": 78,
+      "gust": 2.94
+    },
+    "clouds": {
+      "all": 8
+    },
+    "dt": 1795664455,
+    "sys": {
+      "type": 2,
+      "id": 2107474,
+      "country": "IN",
+      "sunrise": 1795655877,
+      "sunset": 1795695984
+    },
+    "timezone": 19800,
+    "id": 1259652,
+    "name": "Pimpri",
+    "cod": 200
+  }
+}

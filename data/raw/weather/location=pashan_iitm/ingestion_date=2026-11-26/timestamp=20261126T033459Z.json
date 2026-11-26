@@ -1,0 +1,51 @@
+{
+  "location_id": "pashan_iitm",
+  "source": "openweather",
+  "endpoint": "weather",
+  "requested_at": "2026-11-26T03:34:59.430964+00:00",
+  "response_status": 200,
+  "response_payload": {
+    "coord": {
+      "lon": 73.8567,
+      "lat": 18.5204
+    },
+    "weather": [
+      {
+        "id": 800,
+        "main": "Clear",
+        "description": "clear sky",
+        "icon": "01d"
+      }
+    ],
+    "base": "stations",
+    "main": {
+      "temp": 25.84,
+      "feels_like": 25.68,
+      "temp_min": 25.84,
+      "temp_max": 25.84,
+      "pressure": 1018,
+      "humidity": 46,
+      "sea_level": 1018,
+      "grnd_level": 945
+    },
+    "visibility": 10000,
+    "wind": {
+      "speed": 1.96,
+      "deg": 63,
+      "gust": 2.47
+    },
+    "clouds": {
+      "all": 8
+    },
+    "dt": 1795663800,
+    "sys": {
+      "country": "IN",
+      "sunrise": 1795655852,
+      "sunset": 1795695981
+    },
+    "timezone": 19800,
+    "id": 1259229,
+    "name": "Pune",
+    "cod": 200
+  }
+}
