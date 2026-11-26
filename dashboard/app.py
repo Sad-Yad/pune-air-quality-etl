@@ -482,7 +482,7 @@ with tab4:
         hide_index=True
     )
 
-with tab3:
+with tab5:
     st.subheader("Weather & Pollution Dynamics")
     st.write(
         "Low wind speeds (< 7.2 km/h / 2 m/s) coupled with high humidity reduce atmospheric mixing, "
@@ -496,7 +496,7 @@ with tab3:
         st.metric("Current Humidity", f"{loc_row.get('humidity_pct', 'N/A')} %",
                   "High humidity favors aerosol formation" if (loc_row.get('humidity_pct') or 0) > 70 else "Normal")
 
-with tab4:
+with tab6:
     st.subheader("System Alerts & Diagnostics")
     df_alerts = load_recent_alerts(limit=20)
     if not df_alerts.empty:
@@ -512,5 +512,8 @@ with tab4:
             hide_index=True
         )
     else:
-        st.info("No active alerts triggered yet. System operating within normal thresholds.")
+        st.success("🟢 All Clear: No critical threshold violations or active alerts. The environment in Pune is within normal operational parameters.")
+        
+    st.markdown("---")
+    st.caption("ℹ️ **Alert Rules Monitored:** AQI reaching Poor/Very Poor, PM2.5 surging >30% in 3h, Stagnant air inversion (Wind < 2 m/s & Humidity > 70%), or Telemetry downtime > 2h.")
 ###  
