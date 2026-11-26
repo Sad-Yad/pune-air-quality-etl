@@ -51,7 +51,7 @@ def get_latest_readings_all_locations(session: Session) -> pd.DataFrame:
                 GROUP BY location_id
             ) w2 ON w1.location_id = w2.location_id AND w1.observed_at_utc = w2.max_time
         ) w ON l.location_id = w.location_id
-        WHERE l.is_active = 1
+        WHERE l.is_active = TRUE
     """)
     df = pd.read_sql(query, session.bind)
     return df
