@@ -1,7 +1,15 @@
 """Streamlit Dashboard for Pune Air Quality & Weather Intelligence.
 Plain, functional, accessible layout avoiding neon/glass aesthetics.
 """
+import sys
+from pathlib import Path
 from datetime import datetime, timedelta
+
+# Ensure project root is in sys.path when running from Streamlit Cloud
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
